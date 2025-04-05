@@ -103,7 +103,7 @@ pip install -r requirements.txt
 
 If you don't have `requirements.txt`, install the necessary packages manually:
 ```bash
-pip install pandas numpy matplotlib seaborn scikit-learn jupyter nbstripout
+pip install pandas numpy matplotlib seaborn scikit-learn jupyter
 ```
 If you need to see the latest versions of the packages, you can run:
 ```bash

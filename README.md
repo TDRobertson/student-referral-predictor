@@ -78,6 +78,46 @@ To maintain clean, readable notebooks and minimize clutter in the GitHub reposit
 - Ensures clean commit history and easy-to-review pull requests.
 - Avoids merge conflicts related to notebook outputs and metadata.
 
+## Getting Started
+
+### Installation and Setup
+To get started with this project locally:
+
+1. **Clone the Repository**
+```bash
+git clone git@github.com:TDRobertson/csc-4220-final-project.git
+cd your-repo-name
+```
+
+2. **Create a Virtual Environment**
+```bash
+python -m venv venv
+venv\Scripts\activate  
+# On Linux use `source venv/bin/activate`
+```
+
+3. **Install Dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+If you don't have `requirements.txt`, install the necessary packages manually:
+```bash
+pip install pandas numpy matplotlib seaborn scikit-learn jupyter nbstripout
+```
+If you need to see the latest versions of the packages, you can run:
+```bash
+pip freeze > requirements.txt
+```
+
+4. **Run the Jupyter Notebook**
+```bash
+jupyter notebook
+```
+Then open `Behavioral_Disruptions_EDA.ipynb` in your browser.
+
+> Note: Make sure you have Jupyter installed. You can install it with `pip install notebook` if needed.
+
 ## Project Deliverables
 
 - **Jupyter Notebook:** Clearly documented analytical processes, model development, and insights.

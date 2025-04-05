@@ -1,0 +1,35 @@
+# Virtual environment
+venv/
+.env/
+.venv/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+
+# Notebook outputs
+*.ipynb_checkpoints
+*.nbconvert.ipynb
+
+# Large data files (if not intended to track)
+data/
+datasets/
+# *.csv
+*.xlsx
+*.hdf5
+*.sqlite
+*.db
+
+# Logs and temporary files
+logs/
+*.log
+*.tmp
+*.temp
+
+# IDE/system files
+.vscode/
+.idea/
+.DS_Store

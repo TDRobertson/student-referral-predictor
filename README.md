@@ -62,6 +62,22 @@ The project employs three primary datasets provided by the school district:
 - Preparation of a concise two-page report summarizing essential insights, significance of findings, and actionable recommendations in AAAI two-column format.
 - Creation of a clear, engaging live presentation for stakeholders and the class.
 
+## GitHub Actions Auto-Clean Feature
+
+### Purpose
+To maintain clean, readable notebooks and minimize clutter in the GitHub repository, we've implemented an automated GitHub Actions workflow.
+
+### How it Works
+- Upon opening a pull request to the `main` branch, GitHub Actions automatically:
+  1. Checks out the code.
+  2. Installs and runs `nbstripout` to remove outputs and unnecessary metadata from Jupyter notebooks.
+  3. Commits the cleaned notebooks back to the pull request branch.
+
+### Benefits
+- No additional setup required by team members.
+- Ensures clean commit history and easy-to-review pull requests.
+- Avoids merge conflicts related to notebook outputs and metadata.
+
 ## Project Deliverables
 
 - **Jupyter Notebook:** Clearly documented analytical processes, model development, and insights.
@@ -80,5 +96,4 @@ Projects will be evaluated based on:
 - Representative: **Adam West**
 - Next Meeting: **Friday, 04/04/2025** (Teams)
 - Purpose: Clarification, Q&A, data insights discussion
-
 

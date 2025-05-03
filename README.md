@@ -2,138 +2,106 @@
 
 ## Introduction
 
-This project focuses on analyzing and predicting student behavioral disruptions within a school district to minimize class disruptions, improve educational outcomes, and support anticipatory disciplinary actions. Our primary customer is represented by Adam West, aiming to proactively address behavioral issues using data-driven approaches.
+This project focuses on analyzing and predicting student behavioral disruptions within a school district to minimize class interruptions, improve educational outcomes, and support proactive disciplinary actions. Our primary stakeholder is a school board representative, seeking data-driven insights to identify at‑risk students and deploy targeted interventions.
 
 ## Project Goals
 
-The overarching objective is to identify patterns, anomalies, and predictive indicators for student behavioral disruptions. Specific goals include:
-
-- Predicting which students are likely to exhibit behavioral disruptions within the coming week.
-- Identifying anomalous patterns involving specific students or teachers (over-referrals).
-- Providing clear, interpretable insights into why certain behavioral issues occur.
-- Augmenting existing datasets with external information (weather, socio-economic indicators) to enhance predictive accuracy.
+* **Early Warning**: Predict which students are likely to exhibit behavioral disruptions (referrals) in the coming week.
+* **Anomaly Detection**: Flag unusual spikes in referrals for individual students or classrooms.
+* **Interpretability**: Provide clear explanations of why certain students are at higher risk.
+* **Data Enrichment**: Incorporate external sources (weather, family engagement surveys) to boost model accuracy.
 
 ## Dataset Overview
 
-The project employs three primary datasets provided by the school district:
+We integrate four key data sources at a **student‑week** level:
 
-### 1. Bus Conduct Data
-- Records incidents occurring on school buses.
-- Fields include date, bus route type, type of incident, driver's actions, student demographics (ethnicity, gender, grade level), and identifiers.
+1. **Bus Conduct Data**
 
-### 2. Family Engagement Data
-- Contains survey responses from parents/guardians regarding their engagement with the school system.
-- Includes demographics, attitudes towards school recommendation, access to resources, preferences for engagement events, and satisfaction levels.
+   * Incident records on school buses, including type of incident, bus route, and driver response.
+   * Student demographics: grade level, gender, ethnicity.
 
-### 3. Disciplinary Referral Data
-- Captures incidents reported by school staff, categorizing the severity and nature of incidents (minor/major).
-- Includes time, location of incident, specific behaviors, and student demographics (ethnicity, gender, grade level, lunch status, and identifiers).
+2. **Disciplinary Referral Data**
 
-## Methodological Approach
+   * Staff‑reported referrals, categorized by severity and behavior type.
+   * Time of day and location of each incident.
 
-### Phase 1: Exploratory Data Analysis (EDA) & Hypothesis Investigation (~1 week)
-- **Data Cleaning:** Standardizing dates, addressing missing values, and correcting inconsistencies.
-- **Descriptive Analysis:** Identifying patterns related to time (months, days, times), frequency, and location of referrals.
-- **Hypothesis Generation & Testing:**
-  - Investigate temporal patterns (time-based incidents).
-  - Relationship between bus incidents and classroom referrals.
-  - Impact of family engagement levels on student behavior.
-- Apply statistical methods (Chi-square, t-tests, ANOVA) to confirm/refute hypotheses.
+3. **Family Engagement Data**
 
-### Phase 2: Model Development & Follow-up Investigation (~1 week)
-- **Feature Engineering:**
-  - Student-level aggregation (frequency and severity of incidents).
-  - Integration of external data sources (weather, neighborhood demographics).
-- **Modeling Approaches:**
-  - Logistic regression (classification of disruptive vs. non-disruptive students).
-  - Linear regression (prediction of incident severity or frequency).
-  - Advanced modeling (Decision Trees, Random Forests, Gradient Boosting, clustering for anomaly detection).
-- **Model Evaluation:**
-  - Precision, recall, F1-score, ROC-AUC for classification.
-  - RMSE and R² metrics for regression models.
-  - Clearly interpret features to explain model predictions.
+   * Survey responses capturing parental involvement, satisfaction, and resource access.
 
-### Phase 3: Result Cleanup & Extraction (~1/2 week)
-- Final documentation of analytical findings in a Jupyter notebook.
-- Detailed interpretations of statistical analyses, model results, and insights.
-- Visualization of key findings and anomalies (charts, heatmaps, confusion matrices).
+4. **Weather Data**
 
-### Phase 4: Communication (~1/2 week)
-- Preparation of a concise two-page report summarizing essential insights, significance of findings, and actionable recommendations in AAAI two-column format.
-- Creation of a clear, engaging live presentation for stakeholders and the class.
+   * Daily temperature, humidity, and severe weather indicators aggregated by week.
+
+## Modeling Pipeline
+
+1. **Data Integration & Cleaning**
+
+   * Merge all sources on `Student Identifier` and `Week`.
+   * Handle missing values and standardize categorical entries.
+
+2. **Feature Engineering**
+
+   * **Lag Features**: `weekly_referrals` (current-week count), `bus_incident_counts`.
+   * **Demographics**: One‑hot encoding for grade, gender, ethnicity, free/reduced lunch status.
+   * **External Enrichment**: Weekly average temperature, peak humidity, severe weather flags.
+
+3. **Target Definition**
+
+   * **Classification**: `referral_next_week` (0/1) indicates whether a student receives any referral in the following week.
+   * **Regression**: `referrals_next_week_count` for forecasting the number of referrals this week.
+
+4. **Preprocessing**
+
+   * Use a `ColumnTransformer` to scale numeric features and one‑hot encode categoricals.
+   * Employ SMOTE to balance the minority class in the classification pipeline.
+
+5. **Model Selection & Training**
+
+   * **Logistic Regression**: Baseline linear model for binary risk classification.
+   * **Random Forest**: Ensemble of decision trees capturing non‑linear splits.
+   * **MLP Neural Network**: Multi‑layer perceptron to learn complex feature interactions (our top performer).
+   * Hyperparameter tuning via `GridSearchCV` on F1-score and ROC‑AUC.
+
+6. **Evaluation**
+
+   * **Classification Metrics**: Precision, recall, F1-score, ROC‑AUC, and confusion matrices.
+   * **Regression Metrics**: RMSE and R² (for numerical forecasts).
+
+## How It Works
+
+1. **Launch Notebook**: Open `Behavioral_Disruptions_Pipeline.ipynb`.
+2. **Preprocessing**: Run cells to load combined datasets, apply cleaning, and create features.
+3. **Train Models**: Execute the classification pipeline—SMOTE balancing, model training, and grid search.
+4. **Review Results**: Check printed metrics, plots of ROC curves, and feature importances.
+
+## Usage
+
+```bash
+# Clone repository
+git clone git@github.com:TDRobertson/behavioral-disruptions-predictor.git
+cd behavioral-disruptions-predictor
+
+# Set up environment
+python -m venv venv
+source venv/bin/activate    # On Windows: venv\Scripts\activate
+pip install -r requirements.txt
+
+# Run the pipeline by hitting run all cells in the Jupyter notebook
+```
+
+## Key Findings & Next Steps
+
+* The **MLP neural network** achieved the highest classification performance (F1 and ROC‑AUC), capturing non‑linear interactions among behavioral, demographic, and environmental features.
+* **Random Forests** provided strong interpretability via feature importances and performed close behind the neural network.
+* Future work includes deploying the trained classifier to a streaming pipeline and extending the regression module to forecast exact referral counts.
 
 ## GitHub Actions Auto-Clean Feature
 
-### Purpose
-To maintain clean, readable notebooks and minimize clutter in the GitHub repository, we've implemented an automated GitHub Actions workflow.
+> *Maintaining clean notebooks on each pull request.*
 
-### How it Works
-- Upon opening a pull request to the `main` branch, GitHub Actions automatically:
-  1. Checks out the code.
-  2. Installs and runs `nbstripout` to remove outputs and unnecessary metadata from Jupyter notebooks.
-  3. Commits the cleaned notebooks back to the pull request branch.
+1. Checks out code and installs `nbstripout`.
+2. Strips output and metadata from modified notebooks.
+3. Commits cleaned notebooks back to the PR branch.
 
-### Benefits
-- No additional setup required by team members.
-- Ensures clean commit history and easy-to-review pull requests.
-- Avoids merge conflicts related to notebook outputs and metadata.
-
-## Getting Started
-
-### Installation and Setup
-To get started with this project locally:
-
-1. **Clone the Repository**
-```bash
-git clone git@github.com:TDRobertson/csc-4220-final-project.git
-cd your-repo-name
-```
-
-2. **Create a Virtual Environment**
-```bash
-python -m venv venv
-venv\Scripts\activate  
-# On Linux use `source venv/bin/activate`
-```
-
-3. **Install Dependencies**
-```bash
-pip install -r requirements.txt
-```
-
-If you don't have `requirements.txt`, install the necessary packages manually:
-```bash
-pip install pandas numpy matplotlib seaborn scikit-learn jupyter
-```
-If you need to see the latest versions of the packages, you can run:
-```bash
-pip freeze > requirements.txt
-```
-
-4. **Run the Jupyter Notebook**
-```bash
-jupyter notebook
-```
-Then open `Behavioral_Disruptions_EDA.ipynb` in your browser.
-
-> Note: Make sure you have Jupyter installed. You can install it with `pip install notebook` if needed.
-
-## Project Deliverables
-
-- **Jupyter Notebook:** Clearly documented analytical processes, model development, and insights.
-- **Two-Page Report:** Concise summary of the project's findings, significance, and recommendations.
-- **Presentation:** Effective, stakeholder-oriented communication of the project's outcomes.
-
-## Grading Criteria
-
-Projects will be evaluated based on:
-- Alignment with customer objectives and clarity of the analytical purpose.
-- Statistical and methodological soundness.
-- Clarity, comprehensibility, and professional communication in notebook, written report, and presentation.
-- Actionable recommendations clearly connected to data-driven findings.
-
-## Customer Interaction
-- Representative: **Adam West**
-- Next Meeting: **Friday, 04/04/2025** (Teams)
-- Purpose: Clarification, Q&A, data insights discussion
-
+---
